@@ -1,0 +1,73 @@
+
+SWEEP EXPORT & IMAGE GENERATION COMPLETE
+======================================================================
+
+OUTPUT DIRECTORY STRUCTURE:
+outputs/sweeps_analysis/
+├── no_midas/
+│   ├── TSLA_Sweeps_NO_MIDAS.csv (All sweep details)
+│   ├── TSLA_Sweeps_NO_MIDAS_LabelingIndex.csv (For ML labeling)
+│   ├── all_sweeps/ (1546 images)
+│   ├── bullish_sweeps/ (514 images)
+│   ├── bearish_sweeps/ (1032 images)
+│   └── high_quality_sweeps/ (159 images)
+│
+├── with_midas/
+│   ├── TSLA_Sweeps_WITH_MIDAS.csv (All sweep details)
+│   ├── TSLA_Sweeps_WITH_MIDAS_LabelingIndex.csv (For ML labeling)
+│   ├── all_sweeps/ (478 images)
+│   ├── bullish_sweeps/ (28 images)
+│   ├── bearish_sweeps/ (450 images)
+│   └── high_quality_sweeps/ (42 images)
+│
+├── Sweeps_Summary_Statistics.csv
+└── (Other analysis files)
+
+HOW TO USE THIS OUTPUT FOR ML:
+======================================================================
+
+1. REFERENCE SWEEPS BY CSV:
+   - Open TSLA_Sweeps_[NO_MIDAS|WITH_MIDAS].csv
+   - Each row = one sweep with full details
+   - Column 'sweep_id' matches image filename
+
+2. FIND CORRESPONDING IMAGE:
+   - Use 'sweep_id' to locate image: all_sweeps/[sweep_id].png
+   - Image shows price action context around sweep zone
+
+3. MANUAL LABELING WORKFLOW:
+   - Use Image filename to find row in LabelingIndex.csv
+   - Add labels to 'ml_label' column (e.g., VALID, INVALID, UNCERTAIN)
+   - Add notes in 'ml_notes' column
+   - Mark 'reviewed' as Yes when done
+   - Can track labeler confidence in 'ml_confidence' (3: High Confidence, 2: Medium Confidence, 1:Low Confidence)
+
+4. ORGANIZE BY QUALITY/TYPE:
+   - High-quality sweeps in: high_quality_sweeps/ (score ≥ 70)
+   - By sweep direction: bullish_sweeps/, bearish_sweeps/
+   - All sweeps (including low-quality) in: all_sweeps/
+
+KEY COLUMNS IN CSV:
+======================================================================
+- sweep_id: Unique identifier (matches image filename)
+- timestamp: Date/Time of sweep
+- sweep_type: BULLISH or BEARISH
+- zone_level: Price level of liquidity zone
+- sweep_quality_score: Quality score (0-100) for filtering
+- zone_state_at_sweep: Zone state (untested, tested, mitigated, invalidated)
+- zone_touch_count: How many times zone was touched
+- zone_sweep_count: How many times zone was swept
+
+FOR REPRODUCIBILITY:
+======================================================================
+- All sweep data exported to CSV for re-running analysis without re-computation
+- Image filenames encoded with key sweep details: [idx]_[TYPE]_[YYYYMMDD_HHMM]_[Price]
+- Use sweep_id column to link CSV ↔ Image files
+- No need to re-run detection; load CSVs directly for further analysis
+
+NEXT STEPS:
+======================================================================
+1. Review images manually for quality/validity
+2. Add labels to LabelingIndex.csv for ML training dataset
+3. Use labeled dataset to train classification models
+4. Evaluate model performance on hold-out test set
